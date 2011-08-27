@@ -11,7 +11,7 @@ namespace Examples
     [Guid("05E6FBDE-2AFD-4466-A2C4-780D0E046BF7")]
     public class ExampleGenerator
     {
-        public LateBindingComWrapper GetExample1()
+        public RequestImpersonatorCom GetExample1()
         {
             var formData = new[]
             {
@@ -28,12 +28,10 @@ namespace Examples
             
             var serverVariablesData = new string[0][];
 
-            return new LateBindingComWrapper(
-                new RequestImpersonator(
-                    GetData(formData),
-                    GetData(querystringData),
-                    GetData(serverVariablesData)
-                )
+            return new RequestImpersonatorCom(
+                GetData(formData),
+                GetData(querystringData),
+                GetData(serverVariablesData)
             );
         }
 
