@@ -25,8 +25,9 @@ namespace ASPRequestImpersonator
     /// An indexed property is implemented - for requests of the form Request(key) or Request.Item(key) - which considers data from Querystring, Form, and ServerVariables
     /// (in that order). It wil never combine values for the same key from the different sets but if there is no data for a specified key in Querystring but there IS data
     /// in Form, then it will return data from Form.
+    /// 
+    /// Note: This doesn't need to be ComVisible since we're never returning an instance of it through COM, only one wrapped in a LateBindingComWrapper.
     /// </summary>
-	[ComVisible(true)]
     public class RequestImpersonator
 	{
         private RequestDataSnapshot _formData, _querystringData, _serverVariablesData;

@@ -3,13 +3,14 @@ Option Explicit
 Dim objExampleGenerator: Set objExampleGenerator = CreateObject("ASPRequestImpersonator.ExampleGenerator")
 
 Dim objRequest: Set objRequest = objExampleGenerator.GetExample1()
-WScript.Echo objRequest.Item("Key1")
-
 DisplayData objExampleGenerator.GetExample1()
 
 Function DisplayData(ByVal objRequest)
 
 	Dim strKey, strValue
+
+	WScript.Echo TypeName(objRequest)
+	WScript.Echo ""
 
 	WScript.Echo "Querystring: " & objRequest.Querystring
 	WScript.Echo objRequest.Querystring.Count & " item(s)"
