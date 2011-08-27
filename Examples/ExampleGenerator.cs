@@ -21,7 +21,7 @@ namespace Examples
             
             var querystringData = new[]
             {
-                new[] { "Key1", "Value1 with spaces from Querystring" },
+                new[] { "Key1", "Value1 with spaces from QueryString" },
                 new[] { "Key2", "Value2", "Value3" },
                 new[] { "Key3", "Value4" }
             };

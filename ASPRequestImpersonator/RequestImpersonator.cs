@@ -7,28 +7,28 @@ namespace ASPRequestImpersonator
     /// We need to wrap this using a LateBindingComWrapper so that COM can interact with the overloaded methods. We need the separate methods signatures to enable all of the
     /// following forms to be possible:
     /// 
-    ///  Request.Querystring
-    ///   - Returns a url-encoded string containing all of the querystring data, handled by RequestImpersonator.Querystring()
+    ///  Request.QueryString
+    ///   - Returns a url-encoded string containing all of the querystring data, handled by RequestImpersonator.QueryString()
     ///   
-    ///  Request.Querystring(key) 
-    ///   - Returns a string that combines the values for that key, handled by RequestImpersonator.Querystring(key)
+    ///  Request.QueryString(key) 
+    ///   - Returns a string that combines the values for that key, handled by RequestImpersonator.QueryString(key)
     ///   
-    ///  For .. in Request.Querystring(key)
-    ///   - Enumerates through values for that key, handled by RequestImpersonator.Querystring(key)
+    ///  For .. in Request.QueryString(key)
+    ///   - Enumerates through values for that key, handled by RequestImpersonator.QueryString(key)
     ///   
-    ///  Request.Querystring.Item(key) 
-    ///   - Returns a string that combines the values for that key, handled by RequestImpersonator.Querystring()
+    ///  Request.QueryString.Item(key) 
+    ///   - Returns a string that combines the values for that key, handled by RequestImpersonator.QueryString()
     ///   
-    ///  For .. in Request.Querystring.Item(key)
-    ///   - Enumerates through values for that key, handled by RequestImpersonator.Querystring()
+    ///  For .. in Request.QueryString.Item(key)
+    ///   - Enumerates through values for that key, handled by RequestImpersonator.QueryString()
     ///   
-    /// An indexed property is implemented - for requests of the form Request(key) or Request.Item(key) - which considers data from Querystring, Form, and ServerVariables
-    /// (in that order). It wil never combine values for the same key from the different sets but if there is no data for a specified key in Querystring but there IS data
+    /// An indexed property is implemented - for requests of the form Request(key) or Request.Item(key) - which considers data from QueryString, Form, and ServerVariables
+    /// (in that order). It wil never combine values for the same key from the different sets but if there is no data for a specified key in QueryString but there IS data
     /// in Form, then it will return data from Form.
     /// 
     /// Note: This doesn't need to be ComVisible since we're never returning an instance of it through COM, only one wrapped in a LateBindingComWrapper.
     /// </summary>
-    public class RequestImpersonator
+    public class RequestImpersonator : IManagedRequestImpersonator
 	{
         private RequestDataSnapshot _formData, _querystringData, _serverVariablesData;
         public RequestImpersonator(RequestDataSnapshot formData, RequestDataSnapshot querystringData, RequestDataSnapshot serverVariablesData)
@@ -45,63 +45,81 @@ namespace ASPRequestImpersonator
             _serverVariablesData = serverVariablesData;
         }
 
-        public RequestDictionary Querystring()
-        {
-            return new RequestDictionary(_querystringData);
-        }
-        public RequestStringList Querystring(string name)
-        {
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (!_querystringData.Keys.Contains(name))
-                return new RequestStringList(new string[0]);
-            return _querystringData[name];
-        }
-
         public RequestDictionary Form()
         {
             return new RequestDictionary(_formData);
         }
-        public RequestStringList Form(string name)
+		public RequestStringList Form(string key)
         {
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (!_formData.Keys.Contains(name))
+            if (key == null)
+				throw new ArgumentNullException("key");
+			if (!_formData.Keys.Contains(key))
                 return new RequestStringList(new string[0]);
-            return _formData[name];
+			return _formData[key];
         }
 
-        public RequestDictionary ServerVariables()
+		public RequestDictionary QueryString()
+		{
+			return new RequestDictionary(_querystringData);
+		}
+		public RequestStringList QueryString(string key)
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
+			if (!_querystringData.Keys.Contains(key))
+				return new RequestStringList(new string[0]);
+			return _querystringData[key];
+		}
+
+		public RequestDictionary ServerVariables()
         {
             return new RequestDictionary(_serverVariablesData);
         }
-        public RequestStringList ServerVariables(string name)
+		public RequestStringList ServerVariables(string key)
         {
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (!_serverVariablesData.Keys.Contains(name))
+            if (key == null)
+				throw new ArgumentNullException("key");
+			if (!_serverVariablesData.Keys.Contains(key))
                 return new RequestStringList(new string[0]);
-            return _serverVariablesData[name];
+			return _serverVariablesData[key];
         }
 
         /// <summary>
-        /// Try to retrieve data from the internal lists - Querystring takes precedence over Form which takes precedence over ServerVariables. An exception will
+        /// Try to retrieve data from the internal lists - QueryString takes precedence over Form which takes precedence over ServerVariables. An exception will
         /// be thrown for null name argument. Requests with name values that are not present in any list will receive an empty RequestStringList.
         /// </summary>
-        public RequestStringList this[string name]
+		public RequestStringList this[string key]
         {
             get
             {
-                if (name == null)
-                    throw new ArgumentNullException("name");
-                if (_querystringData.Keys.Contains(name))
-                    return _querystringData[name];
-                if (_formData.Keys.Contains(name))
-                    return _formData[name];
-                if (_serverVariablesData.Keys.Contains(name))
-                    return _serverVariablesData[name];
+				if (key == null)
+					throw new ArgumentNullException("key");
+				if (_querystringData.Keys.Contains(key))
+					return _querystringData[key];
+				if (_formData.Keys.Contains(key))
+					return _formData[key];
+				if (_serverVariablesData.Keys.Contains(key))
+					return _serverVariablesData[key];
                 return new RequestStringList(new string[0]);
             }
         }
+
+		// Implement managed interface
+		IManagedRequestStringList IManagedRequestImpersonator.this[string key]
+		{
+			get { throw new NotImplementedException(); }
+		}
+		IManagedRequestDictionary IManagedRequestImpersonator.Form
+		{
+			get { return Form(); }
+		}
+		IManagedRequestDictionary IManagedRequestImpersonator.QueryString
+		{
+			get { return QueryString(); }
+		}
+		IManagedRequestDictionary IManagedRequestImpersonator.ServerVariables
+		{
+			get { return ServerVariables(); }
+		}
 	}
 }

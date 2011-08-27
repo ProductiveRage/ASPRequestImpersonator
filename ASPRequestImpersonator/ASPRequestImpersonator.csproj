@@ -36,6 +36,9 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IManagedRequestStringList.cs" />
+    <Compile Include="IManagedRequestDictionary.cs" />
+    <Compile Include="IManagedRequestImpersonator.cs" />
     <Compile Include="LateBindingComWrapper.cs" />
     <Compile Include="RequestDataSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
