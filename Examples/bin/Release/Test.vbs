@@ -45,17 +45,17 @@ Function DisplayData(ByVal objRequest)
 	WScript.Echo ""
 
 	Dim objDictAllKeys: Set objDictAllKeys = CreateObject("Scripting.Dictionary")
-	For Each strKey in objRequest.Querystring
+	For Each strKey in objRequest.Querystring.Keys
 		If Not objDictAllKeys.Exists(strKey) Then
 			objDictAllKeys.Add strKey, ""
 		End If
 	Next
-	For Each strKey in objRequest.Form
+	For Each strKey in objRequest.Form.Keys
 		If Not objDictAllKeys.Exists(strKey) Then
 			objDictAllKeys.Add strKey, ""
 		End If
 	Next	
-	For Each strKey in objRequest.ServerVariables
+	For Each strKey in objRequest.ServerVariables.Keys
 		If Not objDictAllKeys.Exists(strKey) Then
 			objDictAllKeys.Add strKey, ""
 		End If
