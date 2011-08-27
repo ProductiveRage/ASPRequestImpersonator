@@ -47,7 +47,13 @@ But this isn't easy and I'm not sure it's even possible without the optional par
 
 This also comes from the StackOverflow thread - using the IReflect and ClassInterfaceType.AutoDispatch to wrap access to a class that has method signatures
 
-    public RequestDictionary Querystring()
-    public RequestStringList Querystring(string key)
+    public RequestDictionary QueryString()
+    public RequestStringList QueryString(string key)
 
 and have them both accessible through the COM component.
+
+The final result is the class RequestImpersonatorCom which provides COM access to variety of retrieval methods but also implements IManagedRequestImpersonator which provides a sensible interface for managed code.
+
+## Limitations
+
+While this solves my problem of integrating with VBScript WSCs, there may be some issues with other languages or other uses of the component - for example, Javascript can not enumerate over the keys and values. I don't know how easy this would be to resolve since it's not important for my purposes at the moment.
