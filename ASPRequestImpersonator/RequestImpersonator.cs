@@ -49,6 +49,10 @@ namespace ASPRequestImpersonator
         {
             return new RequestDictionary(_formData);
         }
+
+		/// <summary>
+		/// This will raise an exception for null key value (to be consistent with the ASP Request)
+		/// </summary>
 		public RequestStringList Form(string key)
         {
             if (key == null)
@@ -62,6 +66,10 @@ namespace ASPRequestImpersonator
 		{
 			return new RequestDictionary(_querystringData);
 		}
+
+		/// <summary>
+		/// This will raise an exception for null key value (to be consistent with the ASP Request)
+		/// </summary>
 		public RequestStringList QueryString(string key)
 		{
 			if (key == null)
@@ -75,6 +83,10 @@ namespace ASPRequestImpersonator
         {
             return new RequestDictionary(_serverVariablesData);
         }
+		
+		/// <summary>
+		/// This will raise an exception for null key value (to be consistent with the ASP Request)
+		/// </summary>
 		public RequestStringList ServerVariables(string key)
         {
             if (key == null)
@@ -85,15 +97,15 @@ namespace ASPRequestImpersonator
         }
 
         /// <summary>
-        /// Try to retrieve data from the internal lists - QueryString takes precedence over Form which takes precedence over ServerVariables. An exception will
-        /// be thrown for null name argument. Requests with name values that are not present in any list will receive an empty RequestStringList.
+        /// Try to retrieve data from the internal lists - QueryString takes precedence over Form which takes precedence over ServerVariables. Requests with name values
+		/// that are not present in any list will receive an empty RequestStringList (this includes the case of a null key, to be consistent with the ASP Request)
         /// </summary>
 		public RequestStringList this[string key]
         {
             get
             {
 				if (key == null)
-					throw new ArgumentNullException("key");
+					return new RequestStringList(new string[0]);
 				if (_querystringData.Keys.Contains(key))
 					return _querystringData[key];
 				if (_formData.Keys.Contains(key))
