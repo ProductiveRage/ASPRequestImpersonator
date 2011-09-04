@@ -119,7 +119,7 @@ namespace ASPRequestImpersonator
 		// Implement managed interface
 		IManagedRequestStringList IManagedRequestImpersonator.this[string key]
 		{
-			get { throw new NotImplementedException(); }
+			get { return this[key]; }
 		}
 		IManagedRequestDictionary IManagedRequestImpersonator.Form
 		{
